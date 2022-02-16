@@ -5,7 +5,7 @@ from django.db import models
 User = get_user_model()
 
 
-class Ingridient(models.Model):
+class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='название',
         max_length=100
@@ -16,8 +16,8 @@ class Ingridient(models.Model):
     )
 
     class Meta:
-        verbose_name = 'ингридиент'
-        verbose_name_plural = 'ингридиенты'
+        verbose_name = 'ингредиент'
+        verbose_name_plural = 'ингредиенты'
 
     def __str__(self):
         return self.name
@@ -45,6 +45,36 @@ class Tag(models.Model):
         return self.name
 
 
+class IngredientRecipe(models.Model):
+    # recipe = models.ForeignKey(
+    #     'Recipe',
+    #     verbose_name='рецепт',
+    #     on_delete=models.CASCADE,
+    # )
+    recipe = models.ForeignKey(
+        'Recipe',
+        verbose_name='рецепт',
+        on_delete=models.CASCADE,
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        verbose_name='ингредиент',
+        on_delete=models.CASCADE,
+    )
+    amount = models.PositiveIntegerField(
+        verbose_name='количество',
+    )
+
+    class Meta:
+        verbose_name = 'ингредиент рецепта'
+        verbose_name_plural = 'ингредиенты рецепта'
+        # unique_together = ('ingredient', 'recipe')
+
+    def __str__(self):
+        return (f'{self.ingredient.name}: {self.amount} '
+                f'{self.ingredient.measurement_unit}')
+
+
 class Recipe(models.Model):
     pub_date = models.DateTimeField(
         verbose_name='дата публикации',
@@ -60,6 +90,14 @@ class Recipe(models.Model):
         verbose_name='название',
         max_length=200,
     )
+    ingredients = models.ManyToManyField(
+        # IngredientRecipe,
+        Ingredient,
+        verbose_name='ингредиенты рецепта',
+        related_name='ingredients_recipe',
+        through='IngredientRecipe',
+        # through='IngredientRecipe',
+    )
     image = models.ImageField(
         upload_to=settings.UPLOAD_FOLDER,
         verbose_name='изображение',
@@ -68,10 +106,6 @@ class Recipe(models.Model):
     )
     text = models.TextField(
         verbose_name='описание рецепта',
-    )
-    ingridients = models.ManyToManyField(
-        Ingridient,
-        verbose_name='ингридиент',
     )
     tags = models.ManyToManyField(
         Tag,
@@ -87,62 +121,8 @@ class Recipe(models.Model):
         verbose_name_plural = 'рецепты'
 
     def __str__(self):
-        OUTPUT = ('Название: {name} | автор: {author} '
-                  'дата публикации: {pub_date:%d.%m.%Y %H:%M}')
-        return OUTPUT.format(name=self.name, author=self.author.username,
-                             pub_date=self.pub_date)
-
-
-class IngridientRecipe(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        verbose_name='рецепт',
-        on_delete=models.CASCADE,
-    )
-    ingridient = models.ForeignKey(
-        Ingridient,
-        verbose_name='ингридиент',
-        on_delete=models.CASCADE,
-    )
-    amount = models.PositiveIntegerField(
-        verbose_name='количество',
-    )
-
-    class Meta:
-        verbose_name = 'ингридиент рецепта'
-        verbose_name_plural = 'ингридиенты рецепта'
-
-    def __str__(self):
-        pass
-
-
-class Follow(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='пользователь',
-        related_name='follower',
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='автор',
-        related_name='following',
-    )
-
-    class Meta:
-        verbose_name = 'подписка'
-        verbose_name_plural = 'подписки'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_follower'
-            )
-        ]
-
-    def __str__(self):
-        OUTPUT = 'Пользователь: {user} | автор: {author}'
-        return OUTPUT.format(user=self.user.username,
-                             author=self.author.username)
+        return (f'Название: {self.name} | автор: {self.author.username} '
+                f'| дата публикации: {self.pub_date:%d.%m.%Y %H:%M}')
 
 
 class Favorite(models.Model):
@@ -169,25 +149,30 @@ class Favorite(models.Model):
         ]
 
     def __str__(self):
-        OUTPUT = 'Пользователь: {user} | рецепт: {recipe}'
-        return OUTPUT.format(user=self.user.username,
-                             recipe=self.recipe.name)
+        return (f'Пользователь: {self.user.username} | '
+                f'рецепт: {self.recipe.name}')
 
 
-class ShoppingList(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='пользователь',
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name='рецепт'
-    )
+# class ShoppingList(models.Model):
+#     recipes = models.ManyToManyField(
+#         Recipe,
+#         verbose_name='рецепты'
+#     )
+#     # recipe = models.ForeignKey(
+#     #     Recipe,
+#     #     on_delete=models.CASCADE,
+#     #     verbose_name='рецепт',
+#     #     related_name='shopping_list_recipe',
+#     # )
+#     user = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         verbose_name='пользователь',
+#     )
 
-    class Meta:
-        verbose_name = 'список покупок'
+#     class Meta:
+#         verbose_name = 'список покупок'
+#         verbose_name_plural = 'списки покупок'
 
-    def __str__(self):
-        return f'Список покупок {self.recipe.name}'
+#     def __str__(self):
+#         return f'Список покупок {self.user}'
