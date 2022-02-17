@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from djoser.serializers import UserCreateSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from recipes.serializers.nested import ShortRecipeSerializer
 from rest_framework import serializers
 
