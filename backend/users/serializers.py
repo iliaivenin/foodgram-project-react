@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-
+from djoser.serializers import UserCreateSerializer
 from recipes.serializers.nested import ShortRecipeSerializer
+from rest_framework import serializers
 
 from .models import Subscription
 
@@ -14,8 +15,12 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'email', 'id', 'username',
-            'first_name', 'last_name', 'is_subscribed'
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed'
         )
 
     def get_is_subscribed(self, object):
@@ -25,6 +30,19 @@ class UserSerializer(ModelSerializer):
             Subscription.objects.filter(
                 author=object, user=request.user
             ).exists()
+        )
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'password'
         )
 
 

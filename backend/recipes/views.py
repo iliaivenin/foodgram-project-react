@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -57,6 +58,7 @@ class RecipeViewSet(ModelViewSet):
     # serializer_class = CreateRecipeSerializer
     serializer_class = RecipeListSerializer
     permission_classes = [AllowAny]
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = PageNumberPagination
     lookup_url_kwarg = 'id'

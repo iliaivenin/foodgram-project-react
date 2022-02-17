@@ -1,3 +1,4 @@
+from asyncore import read
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from drf_extra_fields.fields import Base64ImageField
@@ -76,12 +77,14 @@ class RecipeWriteSerializer(ModelSerializer):
     ingredients = ListField(child=DictField(child=IntegerField()))
     tags = ListField(child=SlugField())
     image = Base64ImageField()
+    author = UserSerializer(read_only=True)
 
     class Meta:
         model = Recipe
         fields = (
             'ingredients',
             'tags',
+            'author',
             'image',
             'name',
             'text',
@@ -101,8 +104,22 @@ class RecipeWriteSerializer(ModelSerializer):
             )
         for tag in tags:
             recipe.tags.add(get_object_or_404(Tag, id=int(tag)))
-
         return recipe
+
+    def update(self, instance, validated_data):
+        instance.author = validated_data.get('author', instance.author)
+        instance.image = validated_data.get('image', instance.image)
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time)
+        tag_data = validated_data.pop('tags')
+        ingredient_data = validated_data.pop('ingredients')
+        print(validated_data)
+        Recipe.objects.create(**validated_data)
+        instance.tags.set(tag_data)
+        instance.save()
+        return instance
 
 # class AddIngredientToRecipeSerializer(ModelSerializer):
 #     id = IntegerField()
