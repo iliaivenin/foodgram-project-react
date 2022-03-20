@@ -15,25 +15,11 @@ User = get_user_model()
 
 
 class UserSubscriptionViewSet(UserViewSet):
-    # serializer_class = UserSubscriptionSerializer
-    # serializer_class = UserSerializer
-    # permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
     lookup_url_kwarg = 'id'
 
-    # @action(detail=True, url_path='subscriptions', url_name='subscriptions')
-    # def get_queryset(self):
-    #     subscriptions = Subscription.objects.select_related(
-    #         'author').filter(user=self.request.user)
-    #     # subscriptions = Subscription.objects.filter(user=self.request.user)
-    #     authors_id = []
-    #     for subscription in subscriptions:
-    #         authors_id.append(subscription.author.id)
-    #     return User.objects.filter(id__in=authors_id)
-
     def get_subscription_serializer(self, *args, **kwargs):
         kwargs.setdefault('context', self.get_serializer_context())
-        # return serializer_class(*args, **kwargs)
         return UserSubscriptionSerializer(*args, **kwargs)
 
     @action(detail=False)
@@ -63,7 +49,6 @@ class UserSubscriptionViewSet(UserViewSet):
             return Response(
                 {'errors': 'Ошибка отписки'}, status=HTTP_400_BAD_REQUEST
             )
-        # user = User.objects.get(id=id)
         if Subscription.objects.filter(
             user=request.user, author=author
         ).exists():

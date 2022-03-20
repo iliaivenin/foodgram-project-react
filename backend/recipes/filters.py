@@ -1,9 +1,5 @@
-from django_filters import (
-    AllValuesMultipleFilter,
-    BooleanFilter,
-    CharFilter,
-    FilterSet,
-)
+from django_filters import (AllValuesMultipleFilter, BooleanFilter, CharFilter,
+                            FilterSet)
 
 from .models import Ingredient, Recipe
 
@@ -30,7 +26,7 @@ class RecipeFilter(FilterSet):
     def get_is_favorited(self, queryset, name, value):
         if not value:
             return queryset
-        favorites = self.request.user.favorites.all()
+        favorites = self.request.user.favorited_by_user.all()
         return queryset.filter(
             pk__in=(favorite.recipe.pk for favorite in favorites)
         )
@@ -38,7 +34,5 @@ class RecipeFilter(FilterSet):
     def get_is_in_shopping_cart(self, queryset, name, value):
         if not value:
             return queryset
-        recipes = self.request.user.shopping_cart.recipes.all()
-        return queryset.filter(
-            pk__in=(recipe.pk for recipe in recipes)
-        )
+        shopping_cart = self.request.user.shopping_cart.first()
+        return shopping_cart.recipes.all()

@@ -17,6 +17,7 @@ class User(admin.ModelAdmin):
     list_filter = ('email', 'username',)
     empty_value_display = '-пусто-'
 
+
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user',)

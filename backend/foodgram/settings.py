@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
-# DEBUG = os.environ.get('DEBUG', False)
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
@@ -21,11 +20,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
-    # 'silk',
-    # 'debug_toolbar',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -35,8 +31,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'silk.middleware.SilkyMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 ROOT_URLCONF = 'foodgram.urls'
 TEMPLATES = [
@@ -93,7 +87,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
@@ -111,6 +104,3 @@ DJOSER = {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
     },
 }
-# INTERNAL_IPS = [
-#     "127.0.0.1",
-# ]

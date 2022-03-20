@@ -46,11 +46,6 @@ class Tag(models.Model):
 
 
 class IngredientRecipe(models.Model):
-    # recipe = models.ForeignKey(
-    #     'Recipe',
-    #     verbose_name='рецепт',
-    #     on_delete=models.CASCADE,
-    # )
     recipe = models.ForeignKey(
         'Recipe',
         verbose_name='рецепт',
@@ -68,7 +63,6 @@ class IngredientRecipe(models.Model):
     class Meta:
         verbose_name = 'ингредиент рецепта'
         verbose_name_plural = 'ингредиенты рецепта'
-        # unique_together = ('ingredient', 'recipe')
 
     def __str__(self):
         return (f'{self.ingredient.name}: {self.amount} '
@@ -91,12 +85,10 @@ class Recipe(models.Model):
         max_length=200,
     )
     ingredients = models.ManyToManyField(
-        # IngredientRecipe,
         Ingredient,
         verbose_name='ингредиенты рецепта',
         related_name='ingredients_recipe',
         through='IngredientRecipe',
-        # through='IngredientRecipe',
     )
     image = models.ImageField(
         upload_to=settings.UPLOAD_FOLDER,
@@ -151,28 +143,3 @@ class Favorite(models.Model):
     def __str__(self):
         return (f'Пользователь: {self.user.username} | '
                 f'рецепт: {self.recipe.name}')
-
-
-# class ShoppingList(models.Model):
-#     recipes = models.ManyToManyField(
-#         Recipe,
-#         verbose_name='рецепты'
-#     )
-#     # recipe = models.ForeignKey(
-#     #     Recipe,
-#     #     on_delete=models.CASCADE,
-#     #     verbose_name='рецепт',
-#     #     related_name='shopping_list_recipe',
-#     # )
-#     user = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         verbose_name='пользователь',
-#     )
-
-#     class Meta:
-#         verbose_name = 'список покупок'
-#         verbose_name_plural = 'списки покупок'
-
-#     def __str__(self):
-#         return f'Список покупок {self.user}'
