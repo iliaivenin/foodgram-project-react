@@ -16,7 +16,6 @@ from recipes.serializers.base import (FavoriteRecipeSerializer,
                                       RecipeWriteSerializer, TagSerializer)
 from recipes.serializers.nested import ShortRecipeSerializer
 from users.models import ShoppingCart
-
 from .filters import IngredientFilter, RecipeFilter
 from .models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
 from .paginations import CustomPageNumberPagination
@@ -78,6 +77,9 @@ class RecipeViewSet(ModelViewSet):
         return Response(
             serializer.data, status=HTTP_201_CREATED, headers=headers
         )
+
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

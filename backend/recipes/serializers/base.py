@@ -8,7 +8,6 @@ from rest_framework.serializers import (DictField, IntegerField, ListField,
 from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
 from users.models import ShoppingCart
 from users.serializers import UserSerializer
-
 from .nested import IngredientRecipeSerializer, TagSerializer
 
 User = get_user_model()

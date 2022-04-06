@@ -3,7 +3,6 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from recipes.serializers.nested import ShortRecipeSerializer
-
 from .models import Subscription
 
 User = get_user_model()
